@@ -1,0 +1,362 @@
+\documentclass[11pt,]{article}
+\usepackage[]{mathpazo}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={MPs Parliament Attendance Data collation},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{natbib}
+\bibliographystyle{apsr}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{MPs Parliament Attendance Data collation}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{true}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{Y}
+
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(dplyr)}
+\KeywordTok{library}\NormalTok{(magrittr)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{16th Loksabha Sessions}\label{th-loksabha-sessions}
+
+Session dates and attendance of all members taken from the official
+\href{http://loksabha.nic.in}{website}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## return the number of weekdays between dates d1 and d2\}}
+\NormalTok{num_weekdays <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(d1, d2)\{}
+\NormalTok{    weekend  <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Saturday"}\NormalTok{, }\StringTok{"Sunday"}\NormalTok{)}
+\NormalTok{    all_days <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(d1, d2, }\StringTok{"1 day"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\NormalTok{weekdays}
+    \KeywordTok{sum}\NormalTok{(}\OperatorTok{!}\NormalTok{(all_days }\OperatorTok{%in%}\StringTok{ }\NormalTok{weekend))}
+\NormalTok{\}}
+
+\NormalTok{num_weekdays_v <-}\KeywordTok{Vectorize}\NormalTok{(num_weekdays)}
+\end{Highlighting}
+\end{Shaded}
+
+I copied the session dates into a csv file. Two sessions (IV and XIV
+sessions) had a break. We calculate the number of weekdays in each
+session.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{session_dates <-}\StringTok{ }\NormalTok{here}\OperatorTok{::}\KeywordTok{here}\NormalTok{(}\StringTok{"data/16th"}\NormalTok{, }\StringTok{"loksabha_session_dates.csv"}\NormalTok{)}
+\NormalTok{session_dates <-}\StringTok{ }\NormalTok{readr}\OperatorTok{::}\KeywordTok{read_csv}\NormalTok{(session_dates)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Parsed with column specification:
+## cols(
+##   session = col_character(),
+##   start = col_character(),
+##   end = col_character()
+## )
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{session_dates}\OperatorTok{$}\NormalTok{session }\OperatorTok{%<>%}\StringTok{ }\NormalTok{as.roman }\OperatorTok{%>%}\StringTok{ }\NormalTok{as.integer}
+
+\NormalTok{session_dates}\OperatorTok{$}\NormalTok{start }\OperatorTok{%<>%}\StringTok{ }\NormalTok{lubridate}\OperatorTok{::}\KeywordTok{dmy}\NormalTok{(.)}
+\NormalTok{session_dates}\OperatorTok{$}\NormalTok{end   }\OperatorTok{%<>%}\StringTok{ }\NormalTok{lubridate}\OperatorTok{::}\KeywordTok{dmy}\NormalTok{(.)}
+
+\NormalTok{session_dates}\OperatorTok{$}\NormalTok{session_length <-}\StringTok{ }\KeywordTok{num_weekdays_v}\NormalTok{(session_dates}\OperatorTok{$}\NormalTok{start,}
+\NormalTok{                                               session_dates}\OperatorTok{$}\NormalTok{end)}
+
+\NormalTok{sessions_durations <-}\StringTok{ }\NormalTok{session_dates }\OperatorTok{%>%}
+\StringTok{                      }\KeywordTok{group_by}\NormalTok{(session) }\OperatorTok{%>%}
+\StringTok{                      }\KeywordTok{summarise_if}\NormalTok{(is.numeric, sum)}
+\end{Highlighting}
+\end{Shaded}
+
+The attendance information is unfortunately made available in doc
+format. There were 14 files (one for each session). I converted each doc
+file to docx and used the docxtractr package to extract the tables. I
+know I've to extract the 4th table from each document because I had
+queried the table structure using the \(docx_describe_tbls\) from the
+package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{infile     <-}\StringTok{ }\NormalTok{here}\OperatorTok{::}\KeywordTok{here}\NormalTok{(}\StringTok{"data/16th"}\NormalTok{, }\KeywordTok{paste0}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{14}\NormalTok{, }\StringTok{".docx"}\NormalTok{))}
+\NormalTok{attendance <-}\KeywordTok{lapply}\NormalTok{(infile, }\ControlFlowTok{function}\NormalTok{(fname)\{}
+\NormalTok{                                docxtractr}\OperatorTok{::}\KeywordTok{read_docx}\NormalTok{(fname) }\OperatorTok{%>%}
+\StringTok{                                }\NormalTok{docxtractr}\OperatorTok{::}\KeywordTok{docx_extract_tbl}\NormalTok{(}\DecValTok{4}\NormalTok{)\})}
+\end{Highlighting}
+\end{Shaded}
+
+Stacking together the information from all sessions, I get a usable data
+frame after having cleaned up the column names and fixed column classes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{names}\NormalTok{(attendance) <-}\StringTok{ }\DecValTok{1}\OperatorTok{:}\DecValTok{14}
+\NormalTok{all_sessions <-}\StringTok{ }\KeywordTok{bind_rows}\NormalTok{(attendance, }\DataTypeTok{.id =} \StringTok{"session"}\NormalTok{)}
+
+\NormalTok{all_sessions }\OperatorTok{%<>%}\StringTok{ }\NormalTok{janitor}\OperatorTok{::}\KeywordTok{clean_names}\NormalTok{()}
+\NormalTok{all_sessions}\OperatorTok{$}\NormalTok{session }\OperatorTok{%<>%}\StringTok{ }\NormalTok{as.integer}
+\NormalTok{all_sessions}\OperatorTok{$}\NormalTok{no_of_days_member_signed_the_register }\OperatorTok{%<>%}\StringTok{ }\NormalTok{as.integer}
+\end{Highlighting}
+\end{Shaded}
+
+Some of the column names are really clunky, so lets fix that.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_sessions }\OperatorTok{%<>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{rename}\NormalTok{(}\DataTypeTok{mp_name =}\NormalTok{ name_of_member,}
+                               \DataTypeTok{days_attended =}
+\NormalTok{                               no_of_days_member_signed_the_register)}
+\end{Highlighting}
+\end{Shaded}
+
+Finally, append the length of the session to this data frame and add a
+column for percentage attendance.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_sessions }\OperatorTok{%<>%}\StringTok{ }\KeywordTok{left_join}\NormalTok{(sessions_durations)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Joining, by = "session"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{all_sessions }\OperatorTok{%<>%}\StringTok{ }
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{percent_attendance =} \DecValTok{100} \OperatorTok{*}\StringTok{ }\NormalTok{days_attended }\OperatorTok{/}\NormalTok{session_length)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Features}\label{features}
+
+What we have is a bare bones data set that records the name of each MP,
+their constituency and the number of days they attended the parliament
+(or at least, signed the register). I will now add some features such as
+gender, education etc. that I care about to this information. The source
+for this information is PRS Legislative Research, specifically
+\href{http://www.prsindia.org/mptrack/16loksabha/}{this}. While the data
+is well-formatted and this file also includes percent attendance, I
+chose not to use it as it was not clear how this percent has been
+calculated i.e., what was the denominator in each case. It was also
+becoming a tad annoying to extract the dates hidden in the notes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{infile <-}\StringTok{ }\NormalTok{here}\OperatorTok{::}\KeywordTok{here}\NormalTok{(}\StringTok{"data"}\NormalTok{, }\StringTok{"MPTrack-16.xls"}\NormalTok{)}
+
+\NormalTok{mps_attributes <-}\StringTok{ }\NormalTok{readxl}\OperatorTok{::}\KeywordTok{read_excel}\NormalTok{(infile) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                  }\NormalTok{janitor}\OperatorTok{::}\KeywordTok{clean_names}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+We can use skimr to take a quick look at the data to see if there is
+anything missing. Unfortunately the output of skimr doesn't play well
+with tex.
+
+\subsection{Data clean-up}\label{data-clean-up}
+
+Fix the classes for some columns. For instance, the number of term and
+the political party should be a factor. Also, get rid of some messy
+columns we won't use.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mps_attributes }\OperatorTok{%<>%}\StringTok{ }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{notes)}
+
+\NormalTok{term_levels <-}\KeywordTok{c}\NormalTok{(}\StringTok{"First"}\NormalTok{, }\StringTok{"Second"}\NormalTok{, }\StringTok{"Third"}\NormalTok{, }\StringTok{"Fourth"}\NormalTok{,}\StringTok{"Fifth"}\NormalTok{,}
+                \StringTok{"Sixth"}\NormalTok{, }\StringTok{"Seventh"}\NormalTok{, }\StringTok{"Eighth"}\NormalTok{, }\StringTok{"Ninth"}\NormalTok{)}
+\NormalTok{mps_attributes}\OperatorTok{$}\NormalTok{no_of_term }\OperatorTok{%<>%}\StringTok{ }\KeywordTok{factor}\NormalTok{(term_levels)}
+
+\NormalTok{mps_attributes}\OperatorTok{$}\NormalTok{political_party }\OperatorTok{%<>%}\StringTok{ }\NormalTok{factor}
+\end{Highlighting}
+\end{Shaded}
+
+The really tricky bit is this - we now have to join this set of
+attributes with the data on attendance using name and/or constituency.
+There are so many ways in which this can go wrong - variation on
+spelling, using or not using titles etc. We will do the best we can! For
+starters, make everything lowercase, get rid of space and hope for the
+best.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{clean_up_strings <-}\ControlFlowTok{function}\NormalTok{(str)\{}
+\NormalTok{    str }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\NormalTok{tolower }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{gsub}\NormalTok{(}\StringTok{' '}\NormalTok{,}\StringTok{''}\NormalTok{, .)}
+\NormalTok{\}}
+
+\NormalTok{mps_attributes}\OperatorTok{$}\NormalTok{mp_name }\OperatorTok{%<>%}\StringTok{ }\NormalTok{clean_up_strings}
+\NormalTok{all_sessions}\OperatorTok{$}\NormalTok{mp_name }\OperatorTok{%<>%}\StringTok{ }\NormalTok{clean_up_strings}
+
+\NormalTok{mps_attributes}\OperatorTok{$}\NormalTok{constituency }\OperatorTok{%<>%}\StringTok{ }\NormalTok{clean_up_strings}
+\NormalTok{all_sessions}\OperatorTok{$}\NormalTok{constituency   }\OperatorTok{%<>%}\StringTok{ }\NormalTok{clean_up_strings}
+\end{Highlighting}
+\end{Shaded}
+
+Also, manually fix up some spelling differences between the two files.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## constituency as spelt in mp_attributes = as in all_sessions}
+\NormalTok{mps_attributes}\OperatorTok{$}\NormalTok{constituency }\OperatorTok{%<>%}
+\StringTok{ }\NormalTok{forcats}\OperatorTok{::}\KeywordTok{fct_recode}\NormalTok{(}\DataTypeTok{ramanathapuram =} \StringTok{"ramanthapuram"}\NormalTok{,}
+                     \DataTypeTok{mahesana =} \StringTok{"mehesana"}\NormalTok{,}
+                     \DataTypeTok{kushinagar =} \StringTok{"khushinagar"}\NormalTok{,}
+                     \DataTypeTok{krishnagiri =} \StringTok{"krisnagiri"}\NormalTok{,}
+                     \DataTypeTok{bangaon =} \StringTok{"bongaon"}\NormalTok{)}
+
+\KeywordTok{levels}\NormalTok{(mps_attributes}\OperatorTok{$}\NormalTok{constituency) }\OperatorTok{%<>%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"nominatedanglo-indian"}\NormalTok{)}
+
+\NormalTok{## set this to nominatedanglo-indian}
+\NormalTok{mps_attributes[mps_attributes}\OperatorTok{$}\NormalTok{nature_of_membership }\OperatorTok{==}\StringTok{ "Nominated"}\NormalTok{,}
+               \StringTok{"constituency"}\NormalTok{] <-}\StringTok{  "nominatedanglo-indian"}
+\end{Highlighting}
+\end{Shaded}
+
+Join time!
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{attendance_with_attributes <-}\StringTok{ }\KeywordTok{left_join}\NormalTok{(all_sessions, mps_attributes,}
+                                        \DataTypeTok{by =} \StringTok{"constituency"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Column `constituency` joining character vector and factor,
+## coercing into character vector
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## }
+\end{Highlighting}
+\end{Shaded}
+
+No complaints from R. Check data using skimr and a few rows.
+
+
+\end{document}

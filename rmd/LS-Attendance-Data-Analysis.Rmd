@@ -185,12 +185,36 @@ mps_attributes$constituency %<>% clean_up_strings
 all_sessions$constituency   %<>% clean_up_strings
 ```
 
+Also, manually fix up some spelling differences between the two files.
+
+```{r}
+## constituency as spelt in mp_attributes = as in all_sessions
+mps_attributes$constituency %<>%
+ forcats::fct_recode(ramanathapuram = "ramanthapuram",
+                     mahesana = "mehesana",
+                     kushinagar = "khushinagar",
+                     krishnagiri = "krisnagiri",
+                     bangaon = "bongaon")
+
+levels(mps_attributes$constituency) %<>% c("nominatedanglo-indian")
+
+## set this to nominatedanglo-indian
+mps_attributes[mps_attributes$nature_of_membership == "Nominated",
+               "constituency"] <-  "nominatedanglo-indian"
+
+```
 
 Join time!
 
 
 ```{r}
-all_sessions %<>% left_join(mps_attributes, by = "constituency")
+
+attendance_with_attributes <- left_join(all_sessions, mps_attributes,
+                                        by = "constituency")
+
+
+
+## 
 
 ```
 
