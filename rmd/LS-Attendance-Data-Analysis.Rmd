@@ -21,7 +21,15 @@ biblio-style: apsr
 endnote: no
 ---
 
-## 16th Loksabha Sessions}
+
+```{r setup, eval = TRUE}
+
+library(dplyr)
+library(magrittr)
+
+```
+
+## 16th Loksabha Sessions
 
 Session dates and attendance of all members taken from the official
 [website](http://loksabha.nic.in).
@@ -29,8 +37,8 @@ Session dates and attendance of all members taken from the official
 ```{r}
 ## return the number of weekdays between dates d1 and d2}
 num_weekdays <- function(d1, d2){
-    weekend  < c("Saturday","Sunday")
-    all_days <-seq(d1, d2, "1 day") %>% weekdays
+    weekend  <- c("Saturday", "Sunday")
+    all_days <- seq(d1, d2, "1 day") %>% weekdays
     sum(!(all_days %in% weekend))
 }
 
