@@ -1,0 +1,307 @@
+---
+output: 
+  pdf_document:
+    citation_package: natbib
+    keep_tex: true
+    fig_caption: true
+    latex_engine: pdflatex
+title: MPs Parliament Attendance Data Preparation 
+author:
+- name: Sangeeta Bhatia
+  affiliation: Imperial College London
+abstract: 
+keywords: 
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+geometry: margin=1in
+fontfamily: mathpazo
+fontsize: 11pt
+# spacing: double
+bibliography: 
+biblio-style: apsr
+endnote: no
+---
+
+
+```{r setup, eval = TRUE}
+
+library(dplyr)
+library(magrittr)
+library(stringr)
+```
+
+## 16th Loksabha Sessions
+
+Session dates and attendance of all members taken from the official
+[website](http://loksabha.nic.in).
+
+```{r}
+## return the number of weekdays between dates d1 and d2}
+num_weekdays <- function(d1, d2){
+    weekend  <- c("Saturday", "Sunday")
+    all_days <- seq(d1, d2, "1 day") %>% weekdays
+    sum(!(all_days %in% weekend))
+}
+
+num_weekdays_v <-Vectorize(num_weekdays)
+
+```
+
+I copied the session dates into a csv file. Two sessions (IV and XIV
+sessions) had a break. We calculate the number of weekdays in each
+session.
+
+
+```{r}
+session_dates <- here::here("data/16th", "loksabha_session_dates.csv")
+session_dates <- readr::read_csv(session_dates)
+
+session_dates$session %<>% as.roman %>% as.integer
+
+session_dates$start %<>% lubridate::dmy(.)
+session_dates$end   %<>% lubridate::dmy(.)
+
+session_dates$session_length <- num_weekdays_v(session_dates$start,
+                                               session_dates$end)
+
+sessions_durations <- session_dates %>%
+                      group_by(session) %>%
+                      summarise_if(is.numeric, sum)
+
+
+
+
+```
+
+Adding up the durations of all the sessions, we know that Lok Sabha has worked for 310 days so far.
+The attendance information is unfortunately made available in doc
+format. There were 14 files (one for each session). I converted each doc
+file to docx and used the docxtractr package to extract the tables. I
+know I've to extract the 4th table from each document because I had
+queried the table structure using the \(docx_describe_tbls\) from the
+package.
+
+
+```{r}
+
+attendance  <- here::here("data/16th", paste0(1:14, ".docx")) %>%
+               lapply(function(fname){
+                                docxtractr::read_docx(fname) %>%
+                                docxtractr::docx_extract_tbl(4)})
+
+```
+
+
+Stacking together the information from all sessions, I get a usable data
+frame after having cleaned up the column names and fixed column classes.
+Some of the column names are really clunky, so lets fix that.
+
+
+```{r}
+names(attendance) <- 1:14
+all_sessions <- bind_rows(attendance, .id = "session")
+
+all_sessions %<>% janitor::clean_names()
+
+all_sessions %<>% dplyr::rename(mp_name = name_of_member,
+                               days_attended =
+                               no_of_days_member_signed_the_register)
+
+
+```
+
+We will use the name of the MP to join this data set to the data set 
+containing attributes. so we will clean-up the names as well as other 
+character columns. Let us read in the attributes data first so that we
+can carry our the same clean-up operations on both files.
+
+
+## Features
+
+What we have is a bare bones data set that records the name of each MP,
+their constituency and the number of days they attended the parliament
+(or at least, signed the register). I will now add some features such as
+gender, education etc. that I care about to this information. The source
+for this information is PRS Legislative Research, specifically 
+[this](http://www.prsindia.org/mptrack/16loksabha/). While the data
+is well-formatted and this file also includes percent attendance, I
+chose not to use it as it was not clear how this percent has been
+calculated i.e., what was the denominator in each case. It was also
+becoming a tad annoying to extract the dates hidden in the notes.
+
+
+```{r}
+mps_attributes <- here::here("data", "MPTrack-16.xls") %>%
+                   readxl::read_excel(na = "N/A") %>% 
+                   janitor::clean_names()
+
+```
+
+
+We can use skimr to take a quick look at the data to see if there is 
+anything missing. The output of skimr doesn't play well with tex so 
+I've skipped it here.
+
+## Data clean-up
+
+Fix the classes for some columns. For instance, the number of term and
+the political party should be a factor. Also, get rid of some messy
+columns we won't use.
+
+
+```{r}
+mps_attributes %<>% select(-notes)
+
+
+```
+
+
+The  tricky bit is this - we now have to join this set of
+attributes with the data on attendance using name and/or 
+constituency. There are so many ways in which this can go 
+wrong - variation on spelling, using or not using titles etc. 
+We will do the best we can! For starters, make everything 
+lowercase, get rid of space and hope for the best. 
+Also replace all commas with hyphens as they can create 
+problems later on when we write the output.
+
+First let us save the name so that we can tack it back later
+on.
+
+```{r}
+
+attr_names <- mps_attributes$mp_name
+
+
+titles <- c("dr.", "smt.", "prof.", "col.", "shri",
+            ",", "@", ".", "(", ")", " ")
+for(t in titles){
+  mps_attributes %<>% mutate_if(is.character, 
+                                str_remove_all, 
+                                fixed(t, ignore_case = TRUE))
+  all_sessions %<>% mutate_if(is.character, 
+                              str_remove_all, 
+                              fixed(t, ignore_case = TRUE))
+}
+
+mps_attributes %<>% mutate_if(is.character, str_to_lower)
+all_sessions   %<>% mutate_if(is.character, str_to_lower)
+
+mps_attributes %<>% mutate_if(is.character, str_trim)
+all_sessions   %<>% mutate_if(is.character, str_trim)
+
+mps_attributes$full_name <- attr_names
+
+
+                              
+                             
+```
+
+Also, manually fix up some spelling differences between the two files.
+
+```{r}
+## constituency as spelt in mp_attributes = as in all_sessions
+mps_attributes$constituency %<>%
+ factor %>%   
+ forcats::fct_recode(ramanathapuram = "ramanthapuram",
+                     mahesana = "mehesana",
+                     kushinagar = "khushinagar",
+                     krishnagiri = "krisnagiri",
+                     bangaon = "bongaon")
+
+levels(mps_attributes$constituency) %<>% c("nominatedanglo-indian")
+
+## set this to nominatedanglo-indian
+mps_attributes[mps_attributes$nature_of_membership == "nominated",
+               "constituency"] <-  "nominatedanglo-indian"
+
+```
+
+Join time!
+
+
+```{r}
+
+attendance_with_attributes <- left_join(all_sessions,
+                                        mps_attributes,
+                                        by = "constituency")
+
+```
+
+Joining by constituency is not ideal because a constituency 
+may have been represented by more than one MP during a term.
+We want to join by the name of the MP but as these two data 
+sets come from different sources, there are likely to be 
+discrepancies between spellings, full/partial name, 
+use of titles etc. So we will join by constituency, tease out 
+the rows where MP names are different and *manually* check if
+they represent the same name. It has to be done manually 
+because there are infinite ways in which a name could be 
+written differently.
+
+```{r n_conflict}
+names_conflict <- here::here("data/16th",
+                             "conflicting_names.csv")
+attendance_with_attributes %>%
+    filter(mp_name.x != mp_name.y) %>%
+    select(mp_name.x, mp_name.y) %>%
+    filter(!duplicated(mp_name.x)) %>%
+    readr::write_csv(path = names_conflict)
+
+```
+
+There were only 197 such rows, so error checking wasn't too 
+tedious. I went through each line to check if the two names
+are really the same and deleted the lines where this was 
+not the case. I can now confidently replace the names in one 
+dataset from those in another.
+
+```{r n_resolve}
+resolved <- here::here("data/16th",
+                       "conflicting_names_resolved.csv") %>%
+            readr::read_csv(.) %>% arrange(mp_name.y)
+
+
+```
+Let us replace the names in the attributes data frame.
+
+```{r}
+replace_these <- fixed(resolved$mp_name.y)
+replace_with  <- fixed(resolved$mp_name.x)
+
+mps_attributes %<>% arrange(mp_name)
+mps_attributes[mps_attributes$mp_name %in% replace_these, ] %<>%
+mutate_at("mp_name", str_replace, pattern = replace_these,
+                                  replacement = replace_with)
+
+```
+
+Now I can join by name, check the output and write it out.
+
+```{r}
+attendance_with_attributes <- left_join(all_sessions,
+                                        mps_attributes,
+                                        by = "mp_name")
+
+dim(attendance_with_attributes)
+dim(all_sessions)
+
+```
+That's what we expect to see with a left-join, so things are
+looking good.
+
+```{r}
+
+here::here("data/16th", "attendance_with_attributes.csv") %>%
+readr::write_csv(x = attendance_with_attributes, path = .)
+
+
+here::here("data/16th", "sessions_durations.csv") %>%
+  readr::write_csv(x = sessions_durations, path = .)
+
+
+here::here("data/16th", "all_sessions_attendance.csv") %>%
+  readr::write_csv(x = all_sessions, path = .)
+
+```
+
+
